@@ -10,7 +10,7 @@ export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 
 export function fetchProfile() {
-    let uid = window.localStorage.getItem('uid');
+    let uid = window.localStorage.getItem('uid'); 
 
     if (uid === undefined) {
         return {type: 'UID_NOT_FOUND'};
@@ -28,11 +28,13 @@ export function login(user, password) {
   return {
       type: 'LOGIN',
       payload: {
-        promise: api.put('/login', {
+        promise: api.put('/Flowt', {
           data: {
-            user: user,
-            password: password
-          }
+            UserName: user,
+            Password: password
+          },
+          action:'/Login/LoginForReact',
+          type:'post'
         })
       }
   }

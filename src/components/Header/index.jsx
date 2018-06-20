@@ -44,11 +44,8 @@ class commonHeader extends React.Component {
         <p>Content</p>
       </div>
     );
-
-    return (
-      <Header style={{ background: '#fff', padding: 0 }}>
-        <Row type="flex" justify="end" align="middle">
-          <Col span={3}>
+/**
+ * <Col span={3}>
             <Badge className="header-icon" count={5}>
               <Link to="/mailbox">
                 <Icon type="mail" />
@@ -63,12 +60,21 @@ class commonHeader extends React.Component {
             </Popover>
           </Col>
           <Col span={3}>
-            <Dropdown overlay={menu}>
+          <Dropdown overlay={menu}>
               <a className="ant-dropdown-link" href="#">
                 <Avatar style={{ verticalAlign: 'middle'}}>{username}</Avatar> <Icon type="down" />
               </a>
             </Dropdown>
           </Col>
+ */
+    return (
+      <Header style={{ background: '#fff', padding: 0 }}>
+        <Row type="flex" justify="end" align="middle">
+          <Col span={1}>
+            <Avatar>{username}</Avatar> 
+          </Col>
+          <Col span={1}>{username}</Col>
+          <Col span={1}><a onClick={this.handleLogOut}>注销</a></Col>
         </Row>
       </Header>
     )

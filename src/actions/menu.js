@@ -14,11 +14,13 @@ export function updateNavPath(path, key) {
   }
 }
 
-export function getAllMenu() {
+export function getAllMenu(roleName) {
   return {
     type: GET_ALL_MENU,
     payload: {
-      promise: api.get('/menu')
+      promise: api.get('/menu',{
+        role:roleName
+      })
     }
   }
 }

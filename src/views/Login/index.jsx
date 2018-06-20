@@ -25,6 +25,7 @@ class Login extends React.Component {
   }
 
   handleSubmit (e) {
+    //console.log('handleSubmit');
     e.preventDefault();
     this.setState({
       loading: true

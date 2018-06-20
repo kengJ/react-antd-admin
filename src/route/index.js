@@ -14,12 +14,12 @@ import Steps from '@/views/Steps';
 import Cards from '@/views/Cards';
 import Mailbox from '@/views/Mailbox';
 import Page2 from '@/views/Page2';
+import User from '@/views/User';
 
 export const childRoutes = [
   {
     'path':'/home',
     'component': Home,
-    'exactly': true
   },
   {
     'path':'/form',
@@ -52,6 +52,10 @@ export const childRoutes = [
   {
     'path':'/page2',
     'component': Page2
+  },
+  {
+    'path':'/user',
+    'component': User,
   }
 ];
 

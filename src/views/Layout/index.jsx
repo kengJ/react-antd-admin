@@ -29,11 +29,13 @@ class App extends React.Component {
   }
 
   render() {
+    console.log('layouts',this.props);
+    
     const {auth, navpath, actions} = this.props;
 
     return (
       <Layout className="ant-layout-has-sider">
-        <Sidebar />
+        <Sidebar profile={auth} />
         <Layout>
           <Header profile={auth} logout={actions.logout} />
           <Content style={{ margin: '0 16px' }}>

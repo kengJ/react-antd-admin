@@ -11,7 +11,7 @@ const SubMenu = Menu.SubMenu
 
 import './index.less'
 
-const defaultProps = {
+const defaultProps = { 
   items: []
 }
 
@@ -32,7 +32,7 @@ const isActive = (path, history) => {
 class Sidebar extends React.Component {
 
   state = {
-    openKey: "sub1",
+    openKey: "",
     activeKey: "menu101",
     collapsed: false,
     mode: 'inline',
@@ -46,7 +46,9 @@ class Sidebar extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getAllMenu()
+    console.log('componentDidMount',this.props);
+    
+    this.props.getAllMenu('ADMIN')
   }
 
   componentWillReceiveProps(nextProps) {
