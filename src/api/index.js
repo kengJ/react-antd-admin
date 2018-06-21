@@ -38,7 +38,7 @@ mock.onGet('/menu').reply(config=>{
   //console.log('menu',config.role);
   //let role = JSON.parse(config.role);
   let role = config.role;
-  console.log('menu',config);
+  //console.log('menu',config);
   if(role=="ADMIN"){
     return [200, require('./mock/menuadmin') ];
   }else{
@@ -65,14 +65,14 @@ mock.onGet('/randomuser').reply((config) => {
  * 后台接口
  */
 mock.onPut('/Flowt').reply(config=>{
-  console.log(config);
+  //console.log(config);
   let basicUrl = 'http://127.0.0.1:8080/Flowt';
   let postData = JSON.parse(config.data).data;
   let action = JSON.parse(config.data).action;
   let type = JSON.parse(config.data).type;
   return new Promise(function(resolve, reject){
     if(type=="post"){
-      normalAxios.post(
+      axios.post(
         basicUrl+action,
         postData
       ).then((res)=>{
@@ -81,7 +81,7 @@ mock.onPut('/Flowt').reply(config=>{
         resolve([500, err ]);
       });
     }else{
-      normalAxios.get(
+      axios.get(
         basicUrl+action, 
         {
         params: {

@@ -46,9 +46,12 @@ class Sidebar extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount',this.props);
-    
-    this.props.getAllMenu('ADMIN')
+    //console.log('componentDidMount',this.props.profile.user.role);
+    try{
+      this.props.getAllMenu(this.props.profile.user.role)
+    }catch(e){
+      
+    }
   }
 
   componentWillReceiveProps(nextProps) {

@@ -24,12 +24,12 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    const {actions} = this.props;
-    actions.fetchProfile();
+    //const {actions} = this.props;
+    //actions.fetchProfile();
   }
 
   render() {
-    console.log('layouts',this.props);
+    //console.log('layouts',this.props);
     
     const {auth, navpath, actions} = this.props;
 

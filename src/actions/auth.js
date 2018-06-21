@@ -19,7 +19,13 @@ export function fetchProfile() {
     return {
         type: 'FETCH_PROFILE',
         payload: {
-          promise: api.get('/my')
+          promise: api.put('/Flowt', {
+            data: {
+              uid:uid
+            },
+            action:'/Login/LoginForReact',
+            type:'post'
+          })
         }
     }
 }

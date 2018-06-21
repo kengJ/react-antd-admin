@@ -4,6 +4,7 @@
   "description": "React Ant.Design Admin UI",
   "main": "index.js",
   "scripts": {
+    "start": "cross-env BABELRC=1 COMPILE_ON_DEMAND=none BROWSER=none HOST=0.0.0.0 umi dev",
     "test": "NODE_ENV=test mocha --require babel-register tests/.setup.js tests/**/*-test.js --compilers css:mocha-compiler.js",
     "build": "node build/build.js",
     "dev": "node build/dev-server.js",

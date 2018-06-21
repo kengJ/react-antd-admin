@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import route from '../route';
 import DevTools from './DevTools';
 import { HashRouter as Router } from 'react-router-dom';
-
+//<DevTools />
 export default class Root extends Component {
   render() {
     const { store } = this.props;
@@ -12,7 +12,7 @@ export default class Root extends Component {
       <Provider store={store}>
         <div>
           <Router children={this.route}/>
-          <DevTools />
+          
         </div>
       </Provider>
     );
