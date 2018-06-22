@@ -85,7 +85,7 @@ mock.onPut('/Flowt').reply(config=>{
         basicUrl+action, 
         {
         params: {
-          postData,
+          ...postData,
         },
         responseType: 'json'
       }).then((res) => {

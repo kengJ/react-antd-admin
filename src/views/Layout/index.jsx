@@ -24,16 +24,12 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    //const {actions} = this.props;
-    //actions.fetchProfile();
   }
 
   render() {
-    //console.log('layouts',this.props);
-    
     const {auth, navpath, actions} = this.props;
-
     return (
+      auth.user==null?<Redirect to="/login"/>:
       <Layout className="ant-layout-has-sider">
         <Sidebar profile={auth} />
         <Layout>
