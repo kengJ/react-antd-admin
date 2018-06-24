@@ -1,17 +1,21 @@
 Arguments: 
-  D:\Program Files\nodejs\node.exe C:\Users\heyanzhu\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react
+  D:\Program Files\nodejs\node.exe C:\Users\keng\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install
 
 PATH: 
-  C:\Users\heyanzhu\bin;D:\Program Files (x86)\Git\mingw32\bin;D:\Program Files (x86)\Git\usr\local\bin;D:\Program Files (x86)\Git\usr\bin;D:\Program Files (x86)\Git\usr\bin;D:\Program Files (x86)\Git\mingw32\bin;D:\Program Files (x86)\Git\usr\bin;C:\Users\heyanzhu\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;D:\Python\Python35\Scripts;D:\Program Files\nodejs;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio;D:\sqlite;D:\Python\Python35\Scripts;D:\Python\Python35;D:\Python\Python36\Scripts;D:\Python\Python36;C:\Users\heyanzhu\AppData\Local\Microsoft\WindowsApps;C:\Users\heyanzhu\AppData\Roaming\npm;D:\Program Files\Microsoft VS Code\bin;D:\Program Files (x86)\Nmap;D:\Program Files (x86)\Git\usr\bin\vendor_perl;D:\Program Files (x86)\Git\usr\bin\core_perl
+  C:\Users\keng\bin;D:\Program Files (x86)\Git\mingw32\bin;D:\Program Files (x86)\Git\usr\local\bin;D:\Program Files (x86)\Git\usr\bin;D:\Program Files (x86)\Git\usr\bin;D:\Program Files (x86)\Git\mingw32\bin;D:\Program Files (x86)\Git\usr\bin;C:\Users\keng\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client;C:\Program Files\Intel\iCLS Client;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;D:\Program Files (x86)\Git\cmd;D:\Program Files\nodejs;D:\Programs\Python\Python36\Scripts;D:\Programs\Python\Python36;C:\Users\keng\AppData\Local\Microsoft\WindowsApps;D:\Program Files\Microsoft VS Code\bin;C:\Users\keng\AppData\Roaming\npm;D:\Program Files (x86)\Git\usr\bin\vendor_perl;D:\Program Files (x86)\Git\usr\bin\core_perl
 
 Yarn version: 
-  1.5.1
+  1.7.0
 
 Node version: 
-  8.11.1
+  10.3.0
 
 Platform: 
   win32 x64
+
+Trace: 
+  Error: getaddrinfo ENOTFOUND sps.intra.sit.ffan.com sps.intra.sit.ffan.com:80
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:50:26)
 
 npm manifest: 
   {
@@ -5846,8 +5850,3 @@ Lockfile:
       cliui "^2.1.0"
       decamelize "^1.0.0"
       window-size "0.1.0"
-
-Trace: 
-  Error: getaddrinfo ENOTFOUND sps.intra.sit.ffan.com sps.intra.sit.ffan.com:80
-      at errnoException (dns.js:50:10)
-      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:92:26)

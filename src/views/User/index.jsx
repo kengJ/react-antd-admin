@@ -7,6 +7,15 @@ import { bindActionCreators } from 'redux';
 
 const Search = Input.Search;
 
+/**const EditableCell = ({ editable, value, onChange }) => (
+  <div>
+    {editable
+      ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
+      : value
+    }
+  </div>
+);**/
+
 export default class User extends React.Component {
   state = {
     data: [],
@@ -23,7 +32,9 @@ export default class User extends React.Component {
       title: '用户名',
       dataIndex: 'userName',
       width: '20%',
-      key:'userName'
+      key:'userName',
+      //render:(text,record)=>this.renderColumns(text,record,`userName`)
+      //renders:(text,record)=>this.renderColumns(text,record,`username`)
     }, {
       title: '密码',
       dataIndex: 'password',
@@ -36,25 +47,13 @@ export default class User extends React.Component {
       title: '更新日期',
       dataIndex: 'updateDate',
       key:'updateDate',
-    },{
-      title: '操作',
-      dataIndex: 'action',
-      render: (text, record) => {
-        console.log(this.state.data.length);
-        return (
-          this.state.data.length > 0 ?
-          (
-            <Popconfirm title="是否删除?" onConfirm={() => this.DelUser(record.id)}>
-              <a href="javascript:;">删除</a>
-            </Popconfirm>
-          ) : null
-        );
-      }
     }],
   };
   constructor () {
     super()
   }
+
+  
 
   handleTableChange(){
   }
@@ -67,26 +66,29 @@ export default class User extends React.Component {
 
   componentWillMount(){
     //this._isMounted = true
-    this.findMenu()
+    
   }
 
   componentDidMount() {
   }
 
-  findMenu(){
-    api.put('/Flowt',{
-      data:{},
-      type:'get',
-      action:'/User/UserList'
-    }).then(res=>{
-      //console.log(res.data);
-     //return res.data;
-     this.setState({
-      data: res.data
-    });
-    }).catch(err=>{
-      console.log(err);
-    });
+  findMenu(key){
+    if(key==null||key==""){
+      api.put('/Flowt',{
+        data:{},
+        type:'get',
+        action:'/User/UserList'
+      }).then(res=>{
+        console.log(res.data);
+        this.setState({
+          data: res.data
+        });
+        //this.state={data:res.data}
+      console.log("state",this.state);
+      }).catch(err=>{
+        console.log('err',err);
+      });
+}
   }
 
   searchByCode(e){
@@ -99,6 +101,9 @@ export default class User extends React.Component {
     }).then(res=>{
       //console.log(res.data);
      //return res.data;
+     let data = res.data.map(item=>{
+        item.editable=false
+     });
      this.setState({
       data: res.data
     });
@@ -131,16 +136,31 @@ export default class User extends React.Component {
     console.log(this.state.data);
     
   }
-  /**
-   * <Table columns={this.state.columns}
-          rowKey={record => record.id}
-          dataSource={this.state.data}
-          pagination={this.state.pagination}
-          loading={this.state.loading}
-          onChange={this.handleTableChange}
-        />
-   */
+
+  updateState(key,value){
+    this.setState({key,value})
+  }
+
+  /**renderColumns(text, record, column) {
+    return (
+      <EditableCell
+        editable={record.editable}
+        value={text}
+        onChange={value => this.handleChange(value, record.id, column)}
+      />
+    );
+  }
+  handleChange(value, id, column) {
+    const newData = [...this.state.data];
+    const target = newData.filter(item => id === item.id)[0];
+    if (target) {
+      target[column] = value;
+      this.setState({ data: newData });
+    }
+  }**/
+
   render () {
+    //this.findMenu(null)
     return (
       <div>
       <Row gutter={20}>
@@ -151,7 +171,7 @@ export default class User extends React.Component {
       </Row>
       <Row>
       <PanelBox title="用户列表">
-      <UserTable/>
+      <UserTable columns={this.state.columns} data={this.state.data} updateState={this.setState.bind(this)} />
       </PanelBox>
       </Row>
       </div>

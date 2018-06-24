@@ -2,7 +2,7 @@ import { Table, Input, InputNumber, Popconfirm, Form } from 'antd';
 import React from 'react'
 import './index.less'
 
-const data = [];
+let data = [];
 for (let i = 0; i < 10; i++) {
   data.push({
     id: i.toString(),
@@ -11,7 +11,6 @@ for (let i = 0; i < 10; i++) {
     createDate: '',
   });
 }
-
 const EditableCell = ({ editable, value, onChange }) => (
   <div>
     {editable
@@ -24,37 +23,13 @@ const EditableCell = ({ editable, value, onChange }) => (
 class UserTable extends React.Component {
   constructor(props) {
     super(props);
-    this.columns = [{
-      title: 'ID',
-      dataIndex: 'id',
-      sorter: true,
-      key:'id',
-      //render: name => `${name.first} ${name.last}`,
-      width: '10%',
-    }, {
-      title: '用户名',
-      dataIndex: 'userName',
-      width: '20%',
-      key:'userName',
-      render: (text, record) => this.renderColumns(text, record, 'userName')
-    }, {
-      title: '密码',
-      dataIndex: 'password',
-      key:'password',
-      render: (text, record) => this.renderColumns(text, record, 'password')
-    },{
-      title: '创建日期',
-      dataIndex: 'createDate',
-      key:'createDate',
-    },{
-      title: '更新日期',
-      dataIndex: 'updateDate',
-      key:'updateDate',
-    }, {
+    //console.log('componentDidMount');
+    let action = {
       title: 'operation',
       dataIndex: 'operation',
       render: (text, record) => {
         const { editable } = record;
+        //console.log('editable',editable);
         return (
           <div className="editable-row-operations">
             {
@@ -70,9 +45,21 @@ class UserTable extends React.Component {
           </div>
         );
       },
-    }];
-    this.state = { data };
-    this.cacheData = data.map(item => ({ ...item }));
+    }
+    this.columns = [...this.props.columns,action]
+    //data = this.props.data;
+    //console.log('data',data);
+    //this.state = { data };
+    //console.log(this.state.data)
+    //console.log('columns 遍历开始')
+    this.columns.map(item=>{
+      if(item.title!="operation"){
+        item.render=(text,record)=>this.renderColumns(text,record,`userName`)
+      }
+      
+      //console.log(item)
+    })
+    console.log(this.columns)
   }
   renderColumns(text, record, column) {
     return (
@@ -84,50 +71,60 @@ class UserTable extends React.Component {
     );
   }
   handleChange(value, id, column) {
-    const newData = [...this.state.data];
+    const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
-      this.setState({ data: newData });
+      //this.setState({ data: newData });
+      this.props.updateState(data,newData);
     }
   }
   edit(id) {
-    const newData = [...this.state.data];
+    //const newData = [...this.state.data];
+    const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target.editable = true;
-      this.setState({ data: newData });
+      //this.setState({ data: newData });
+      this.props.updateState(data,newData);
     }
   }
   save(id) {
-    const newData = [...this.state.data];
+    const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       delete target.editable;
-      this.setState({ data: newData });
-      this.cacheData = newData.map(item => ({ ...item }));
+      //this.setState({ data: newData });
+      this.props.updateState(data,newData);
+      this.state.data = newData.map(item => ({ ...item }));
     }
   }
   cancel(id) {
-    const newData = [...this.state.data];
+    const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
-      Object.assign(target, this.cacheData.filter(item => id === item.id)[0]);
+      Object.assign(target, this.props.data.filter(item => id === item.id)[0]);
       delete target.editable;
-      this.setState({ data: newData });
+      //this.setState({ data: newData });
+      //this.updateState()
+      this.props.updateState(data,newData);
     }
   }
   handleTableChange(){
 
   }
+
+  
   render() {
+    //console.log('render data:',this.props.data)
+    //this.setState({data:this.props.data});
     return <Table 
               size="small"
-              pagination={this.state.pagination}
+              //pagination={this.state.pagination}
               bordered
               rowKey={record => record.id}
               loading={false} 
-              dataSource={this.state.data} 
+              dataSource={this.props.data} 
               columns={this.columns} 
               onChange={this.handleTableChange}/>;
   }
