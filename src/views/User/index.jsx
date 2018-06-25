@@ -7,15 +7,6 @@ import { bindActionCreators } from 'redux';
 
 const Search = Input.Search;
 
-/**const EditableCell = ({ editable, value, onChange }) => (
-  <div>
-    {editable
-      ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
-      : value
-    }
-  </div>
-);**/
-
 export default class User extends React.Component {
   state = {
     data: [],
@@ -26,15 +17,13 @@ export default class User extends React.Component {
       dataIndex: 'id',
       sorter: true,
       key:'id',
-      //render: name => `${name.first} ${name.last}`,
+      dataType:'read',
       width: '10%',
     }, {
       title: '用户名',
       dataIndex: 'userName',
       width: '20%',
       key:'userName',
-      //render:(text,record)=>this.renderColumns(text,record,`userName`)
-      //renders:(text,record)=>this.renderColumns(text,record,`username`)
     }, {
       title: '密码',
       dataIndex: 'password',
@@ -43,17 +32,17 @@ export default class User extends React.Component {
       title: '创建日期',
       dataIndex: 'createDate',
       key:'createDate',
+      dataType:'read'
     },{
       title: '更新日期',
       dataIndex: 'updateDate',
       key:'updateDate',
+      dataType:'read'
     }],
   };
   constructor () {
     super()
   }
-
-  
 
   handleTableChange(){
   }
@@ -65,7 +54,6 @@ export default class User extends React.Component {
   }
 
   componentWillMount(){
-    //this._isMounted = true
     
   }
 
@@ -83,7 +71,6 @@ export default class User extends React.Component {
         this.setState({
           data: res.data
         });
-        //this.state={data:res.data}
       console.log("state",this.state);
       }).catch(err=>{
         console.log('err',err);
@@ -92,15 +79,12 @@ export default class User extends React.Component {
   }
 
   searchByCode(e){
-    //console.log('SearchByCode');
     let inputValue = this.refs.searchInput.refs.input.value;
     api.put('/Flowt',{
       data:{Code:inputValue},
       type:'get',
       action:'/User/UserListByCode'
     }).then(res=>{
-      //console.log(res.data);
-     //return res.data;
      let data = res.data.map(item=>{
         item.editable=false
      });
@@ -116,7 +100,6 @@ export default class User extends React.Component {
     }).catch(err=>{
       console.log(err);
     });
-    //console.log(this.refs.searchInput.refs.input.value);
   }
   /**增加行数据 */
   handleAdd = () => {
@@ -141,23 +124,9 @@ export default class User extends React.Component {
     this.setState({key,value})
   }
 
-  /**renderColumns(text, record, column) {
-    return (
-      <EditableCell
-        editable={record.editable}
-        value={text}
-        onChange={value => this.handleChange(value, record.id, column)}
-      />
-    );
+  saveState(id,data,callback){
+
   }
-  handleChange(value, id, column) {
-    const newData = [...this.state.data];
-    const target = newData.filter(item => id === item.id)[0];
-    if (target) {
-      target[column] = value;
-      this.setState({ data: newData });
-    }
-  }**/
 
   render () {
     //this.findMenu(null)
@@ -171,7 +140,11 @@ export default class User extends React.Component {
       </Row>
       <Row>
       <PanelBox title="用户列表">
-      <UserTable columns={this.state.columns} data={this.state.data} updateState={this.setState.bind(this)} />
+      <UserTable 
+        columns={this.state.columns} 
+        data={this.state.data} 
+        updateState={this.setState.bind(this)} 
+        saveState={this.saveState.bind(this)}/>
       </PanelBox>
       </Row>
       </div>

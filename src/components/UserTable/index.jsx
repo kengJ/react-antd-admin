@@ -2,16 +2,7 @@ import { Table, Input, InputNumber, Popconfirm, Form } from 'antd';
 import React from 'react'
 import './index.less'
 
-let data = [];
-for (let i = 0; i < 10; i++) {
-  data.push({
-    id: i.toString(),
-    userName: `Edrward ${i}`,
-    password: '123456',
-    createDate: '',
-  });
-}
-const EditableCell = ({ editable, value, onChange }) => (
+const EditableCell = ({ editable, value, onChange}) => (
   <div>
     {editable
       ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
@@ -23,13 +14,11 @@ const EditableCell = ({ editable, value, onChange }) => (
 class UserTable extends React.Component {
   constructor(props) {
     super(props);
-    //console.log('componentDidMount');
     let action = {
       title: 'operation',
       dataIndex: 'operation',
       render: (text, record) => {
         const { editable } = record;
-        //console.log('editable',editable);
         return (
           <div className="editable-row-operations">
             {
@@ -47,20 +36,19 @@ class UserTable extends React.Component {
       },
     }
     this.columns = [...this.props.columns,action]
-    //data = this.props.data;
-    //console.log('data',data);
-    //this.state = { data };
-    //console.log(this.state.data)
-    //console.log('columns 遍历开始')
     this.columns.map(item=>{
-      if(item.title!="operation"){
-        item.render=(text,record)=>this.renderColumns(text,record,`userName`)
+      if((item.title!="operation")&&(item.title!="operation"&&item.dataType!="read")){
+        item.render=(text,record)=>this.renderColumns(text,record,item.dataIndex)
       }
-      
-      //console.log(item)
     })
-    console.log(this.columns)
+    
   }
+  /**
+   * 加载编辑模块
+   * @param {*} text 
+   * @param {*} record 
+   * @param {*} column 
+   */
   renderColumns(text, record, column) {
     return (
       <EditableCell
@@ -70,57 +58,80 @@ class UserTable extends React.Component {
       />
     );
   }
+
+  /**
+   * 编辑模块 输入框更改时触发
+   * @param {*} value 
+   * @param {*} id 
+   * @param {*} column 
+   */
   handleChange(value, id, column) {
     const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
-      //this.setState({ data: newData });
       this.props.updateState(data,newData);
     }
   }
+
+  /**
+   * 编辑按钮触发
+   * @param {*} id 
+   */
   edit(id) {
-    //const newData = [...this.state.data];
     const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target.editable = true;
-      //this.setState({ data: newData });
       this.props.updateState(data,newData);
     }
   }
+
+  /**
+   * 保存按钮触发
+   * @param {*} id 
+   */
   save(id) {
     const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       delete target.editable;
-      //this.setState({ data: newData });
       this.props.updateState(data,newData);
       this.state.data = newData.map(item => ({ ...item }));
     }
   }
+
+  /**
+   * 取消按钮触发
+   * @param {*} id 
+   */
   cancel(id) {
     const newData = [...this.props.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       Object.assign(target, this.props.data.filter(item => id === item.id)[0]);
       delete target.editable;
-      //this.setState({ data: newData });
-      //this.updateState()
       this.props.updateState(data,newData);
     }
   }
-  handleTableChange(){
 
+  /**更新值函数 修改值时触发 */
+  handleTableChange(value){
+    const newData = [...this.props.data];
+    this.props.updateState(data,newData);
   }
 
-  
+  shouldComponentUpdate(nextProps, nextState){
+    
+    console.log('componentWillUpdata:data=>',this.props.data)
+    console.log('componentWillUpdata:data=>',nextProps.data)
+    //nextState
+    return true;
+  }
+
   render() {
-    //console.log('render data:',this.props.data)
-    //this.setState({data:this.props.data});
     return <Table 
               size="small"
-              //pagination={this.state.pagination}
               bordered
               rowKey={record => record.id}
               loading={false} 
