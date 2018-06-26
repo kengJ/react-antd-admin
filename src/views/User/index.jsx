@@ -124,8 +124,18 @@ export default class User extends React.Component {
     this.setState({key,value})
   }
 
-  saveState(id,data,callback){
-
+  saveState(oldData,newData){
+    api.put('/Flowt',{
+      data:{oldData:oldData,newData:newData},
+      type:'post',
+      action:'/User/UpdateUserById'
+    }).then(res=>{
+    console.log(res.data)
+    }).catch(err=>{
+      console.log(err);
+    });
+    //console.log(id);
+    //console.log(data);
   }
 
   render () {

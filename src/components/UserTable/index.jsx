@@ -12,6 +12,10 @@ const EditableCell = ({ editable, value, onChange}) => (
 );
 
 class UserTable extends React.Component {
+  state={
+    data:[],
+    data_bak:[]
+  }
   constructor(props) {
     super(props);
     let action = {
@@ -41,7 +45,6 @@ class UserTable extends React.Component {
         item.render=(text,record)=>this.renderColumns(text,record,item.dataIndex)
       }
     })
-    
   }
   /**
    * 加载编辑模块
@@ -66,11 +69,12 @@ class UserTable extends React.Component {
    * @param {*} column 
    */
   handleChange(value, id, column) {
-    const newData = [...this.props.data];
+    const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
-      this.props.updateState(data,newData);
+      //this.props.updateState(data,newData);
+      this.setState({data:newData});
     }
   }
 
@@ -79,11 +83,12 @@ class UserTable extends React.Component {
    * @param {*} id 
    */
   edit(id) {
-    const newData = [...this.props.data];
+    const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target.editable = true;
-      this.props.updateState(data,newData);
+      //this.props.updateState(data,newData);
+      this.setState({data:newData});
     }
   }
 
@@ -92,12 +97,17 @@ class UserTable extends React.Component {
    * @param {*} id 
    */
   save(id) {
-    const newData = [...this.props.data];
+    const newData = [...this.state.data_bak];
     const target = newData.filter(item => id === item.id)[0];
+    const target_bak = newData.filter(item => id === item.id)[0];
     if (target) {
+      Object.assign(target, this.state.data.filter(item => id === item.id)[0]);//替换this.state.data_bak数据
       delete target.editable;
-      this.props.updateState(data,newData);
-      this.state.data = newData.map(item => ({ ...item }));
+      console.log("save",target_bak)
+      console.log("save",target)
+      this.props.saveState(target_bak,target)
+      //this.props.updateState(data,newData);
+      //this.state.data = newData.map(item => ({ ...item }));
     }
   }
 
@@ -106,25 +116,33 @@ class UserTable extends React.Component {
    * @param {*} id 
    */
   cancel(id) {
-    const newData = [...this.props.data];
+    const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
-      Object.assign(target, this.props.data.filter(item => id === item.id)[0]);
+      Object.assign(target, this.state.data_bak.filter(item => id === item.id)[0]);
       delete target.editable;
-      this.props.updateState(data,newData);
+      //this.props.updateState(data,newData);
+      this.setState({data:newData});
     }
   }
 
   /**更新值函数 修改值时触发 */
   handleTableChange(value){
-    const newData = [...this.props.data];
-    this.props.updateState(data,newData);
+    const newData = [...this.state.data];
+    //this.props.updateState(data,newData);
+    this.setState({data:newData})
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    
-    console.log('componentWillUpdata:data=>',this.props.data)
-    console.log('componentWillUpdata:data=>',nextProps.data)
+    //监测this.props.data的变动
+    console.log(':old props data:',this.props.data)
+    console.log(':new props data:',nextProps.data)
+    console.log('比较两者的区别',this.props.data==nextProps.data)
+    //第一次查询
+    if(this.props.data!=nextProps.data){
+      nextState.data = nextProps.data;
+      nextState.data_bak = nextProps.data;
+    }
     //nextState
     return true;
   }
@@ -135,7 +153,7 @@ class UserTable extends React.Component {
               bordered
               rowKey={record => record.id}
               loading={false} 
-              dataSource={this.props.data} 
+              dataSource={this.state.data} 
               columns={this.columns} 
               onChange={this.handleTableChange}/>;
   }
