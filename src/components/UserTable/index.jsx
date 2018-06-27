@@ -11,6 +11,8 @@ const EditableCell = ({ editable, value, onChange}) => (
   </div>
 );
 
+const data_bak = []
+
 class UserTable extends React.Component {
   state={
     data:[],
@@ -53,6 +55,7 @@ class UserTable extends React.Component {
    * @param {*} column 
    */
   renderColumns(text, record, column) {
+    console.log("renderColumns",this.data_bak)
     return (
       <EditableCell
         editable={record.editable}
@@ -69,13 +72,21 @@ class UserTable extends React.Component {
    * @param {*} column 
    */
   handleChange(value, id, column) {
+    console.log(value)
+    console.log("Change",this.state.data)
+    console.log("Change",this.state.data_bak)
     const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
       //this.props.updateState(data,newData);
-      this.setState({data:newData});
+      //console.log("Change",this.state.data)
+      //console.log("Change",this.state.data_bak)
+      //this.setState({data:newData});
+      //console.log("Change",this.state.data)
+      //console.log("Change",this.state.data_bak)
     }
+    
   }
 
   /**
@@ -126,8 +137,9 @@ class UserTable extends React.Component {
     }
   }
 
-  /**更新值函数 修改值时触发 */
+  /**触发分页时函数 */
   handleTableChange(value){
+    console.log("handleTableChange")
     const newData = [...this.state.data];
     //this.props.updateState(data,newData);
     this.setState({data:newData})
@@ -135,19 +147,42 @@ class UserTable extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState){
     //监测this.props.data的变动
-    console.log(':old props data:',this.props.data)
-    console.log(':new props data:',nextProps.data)
-    console.log('比较两者的区别',this.props.data==nextProps.data)
     //第一次查询
     if(this.props.data!=nextProps.data){
-      nextState.data = nextProps.data;
-      nextState.data_bak = nextProps.data;
+      console.log("shouldComponentUpdate=>props")
+      console.log(this.props.data)
+      console.log(nextProps.data)
+      //nextState.data = [...nextProps.data];
+      //nextState.data_bak = [...nextProps.data];
+      Object.assign(nextState.data,nextProps.data);
+      Object.assign(nextState.data_bak,nextProps.data);
+      console.log(this.state.data)
+      console.log(nextState.data)
+
     }
+
+    if(this.state.data!=nextState.data){
+      console.log("shouldComponentUpdate=>state")
+      console.log(this.state.data)
+      console.log(nextState.data)
+      console.log(this.props.data)
+      //nextState.data = [...nextProps.data];
+      //nextState.data_bak = [...nextProps.data];
+      //Object.assign(nextState.data,nextProps.data);
+      //Object.assign(nextState.data_bak,nextProps.data);
+    }
+
     //nextState
     return true;
   }
 
+  componentWillReceivePorps(nextProps){
+    console.log('componentWillReceivePorps')
+  }
+
   render() {
+    console.log("render=>data_bak",this.state.data_bak)
+    console.log("render=>data",this.state.data)
     return <Table 
               size="small"
               bordered
