@@ -85,9 +85,6 @@ export default class User extends React.Component {
       type:'get',
       action:'/User/UserListByCode'
     }).then(res=>{
-     let data = res.data.map(item=>{
-        item.editable=false
-     });
      this.setState({
       data: res.data
     });

@@ -42,6 +42,7 @@ class UserTable extends React.Component {
       },
     }
     this.columns = [...this.props.columns,action]
+    console.log(this.columns)
     this.columns.map(item=>{
       if((item.title!="operation")&&(item.title!="operation"&&item.dataType!="read")){
         item.render=(text,record)=>this.renderColumns(text,record,item.dataIndex)
@@ -79,28 +80,37 @@ class UserTable extends React.Component {
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
-      //this.props.updateState(data,newData);
-      //console.log("Change",this.state.data)
-      //console.log("Change",this.state.data_bak)
-      //this.setState({data:newData});
-      //console.log("Change",this.state.data)
-      //console.log("Change",this.state.data_bak)
     }
     
   }
+
+updateState(key,value){
+  this.setState({key,value})
+}
 
   /**
    * 编辑按钮触发
    * @param {*} id 
    */
   edit(id) {
-    const newData = [...this.state.data];
+    console.log("edit=>data",this.state.data)
+    console.log("edit=>data_bak",this.state.data_bak)
+    const newData = this.state.data.map(item => ({ ...item }))
+    
+    console.log(newData)
     const target = newData.filter(item => id === item.id)[0];
-    if (target) {
-      target.editable = true;
+    target.editable = true;
+    console.log("edit=>data",this.state.data)
+    console.log("edit=>data_bak",this.state.data_bak)
+    //const target = newData.filter(item => id === item.id)[0];
+    //if (target) {
+      //target.editable = true;
       //this.props.updateState(data,newData);
-      this.setState({data:newData});
-    }
+      //this.setState({data:newData});
+      //this.updateState('data',newData)
+      //console.log("edit=>data",this.state.data)
+      //console.log("edit=>data_bak",this.state.data_bak)
+    //}
   }
 
   /**
