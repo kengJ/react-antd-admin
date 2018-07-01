@@ -128,6 +128,15 @@ export default class User extends React.Component {
       action:'/User/UpdateUserById'
     }).then(res=>{
     console.log(res.data)
+    if(res.data.key=="success"){
+      this.findMenu(null)
+      //this.saveState({data:res.data.value})
+    }else{
+      notification.open({
+        message: '更新失败',
+        description: "数据已被更新",
+      });
+    }
     }).catch(err=>{
       console.log(err);
     });

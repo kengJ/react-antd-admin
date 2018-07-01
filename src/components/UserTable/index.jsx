@@ -56,7 +56,6 @@ class UserTable extends React.Component {
    * @param {*} column 
    */
   renderColumns(text, record, column) {
-    console.log("renderColumns",this.data_bak)
     return (
       <EditableCell
         editable={record.editable}
@@ -73,15 +72,13 @@ class UserTable extends React.Component {
    * @param {*} column 
    */
   handleChange(value, id, column) {
-    console.log(value)
-    console.log("Change",this.state.data)
-    console.log("Change",this.state.data_bak)
-    const newData = [...this.state.data];
+    const newData = this.state.data.map(item => ({ ...item }))
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       target[column] = value;
     }
-    
+    this.setState({data:newData})
+    console.log('handleChange=>bak',this.state.data_bak)
   }
 
 updateState(key,value){
@@ -93,24 +90,12 @@ updateState(key,value){
    * @param {*} id 
    */
   edit(id) {
-    console.log("edit=>data",this.state.data)
-    console.log("edit=>data_bak",this.state.data_bak)
     const newData = this.state.data.map(item => ({ ...item }))
-    
-    console.log(newData)
     const target = newData.filter(item => id === item.id)[0];
-    target.editable = true;
-    console.log("edit=>data",this.state.data)
-    console.log("edit=>data_bak",this.state.data_bak)
-    //const target = newData.filter(item => id === item.id)[0];
-    //if (target) {
-      //target.editable = true;
-      //this.props.updateState(data,newData);
-      //this.setState({data:newData});
-      //this.updateState('data',newData)
-      //console.log("edit=>data",this.state.data)
-      //console.log("edit=>data_bak",this.state.data_bak)
-    //}
+    if (target) {
+      target.editable = true;
+      this.setState({data:newData})
+    }
   }
 
   /**
@@ -118,17 +103,15 @@ updateState(key,value){
    * @param {*} id 
    */
   save(id) {
-    const newData = [...this.state.data_bak];
-    const target = newData.filter(item => id === item.id)[0];
-    const target_bak = newData.filter(item => id === item.id)[0];
+    console.log(this.state.data)
+    console.log(this.state.data_bak)
+    //const newData =  this.state.data.map(item => ({ ...item }))
+    const target = this.state.data.filter(item => id === item.id)[0];
+    const target_bak = this.state.data_bak.filter(item => id === item.id)[0];
     if (target) {
       Object.assign(target, this.state.data.filter(item => id === item.id)[0]);//替换this.state.data_bak数据
       delete target.editable;
-      console.log("save",target_bak)
-      console.log("save",target)
       this.props.saveState(target_bak,target)
-      //this.props.updateState(data,newData);
-      //this.state.data = newData.map(item => ({ ...item }));
     }
   }
 
@@ -137,12 +120,11 @@ updateState(key,value){
    * @param {*} id 
    */
   cancel(id) {
-    const newData = [...this.state.data];
+    const newData = this.state.data.map(item => ({ ...item }))
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
       Object.assign(target, this.state.data_bak.filter(item => id === item.id)[0]);
       delete target.editable;
-      //this.props.updateState(data,newData);
       this.setState({data:newData});
     }
   }
@@ -159,29 +141,10 @@ updateState(key,value){
     //监测this.props.data的变动
     //第一次查询
     if(this.props.data!=nextProps.data){
-      console.log("shouldComponentUpdate=>props")
-      console.log(this.props.data)
-      console.log(nextProps.data)
-      //nextState.data = [...nextProps.data];
-      //nextState.data_bak = [...nextProps.data];
-      Object.assign(nextState.data,nextProps.data);
-      Object.assign(nextState.data_bak,nextProps.data);
-      console.log(this.state.data)
-      console.log(nextState.data)
-
+      console.log("shouldComponentUpdate=>bak")
+      nextState.data = nextProps.data.map(item => ({ ...item }))
+      nextState.data_bak = nextProps.data.map(item => ({ ...item }))
     }
-
-    if(this.state.data!=nextState.data){
-      console.log("shouldComponentUpdate=>state")
-      console.log(this.state.data)
-      console.log(nextState.data)
-      console.log(this.props.data)
-      //nextState.data = [...nextProps.data];
-      //nextState.data_bak = [...nextProps.data];
-      //Object.assign(nextState.data,nextProps.data);
-      //Object.assign(nextState.data_bak,nextProps.data);
-    }
-
     //nextState
     return true;
   }
@@ -191,8 +154,6 @@ updateState(key,value){
   }
 
   render() {
-    console.log("render=>data_bak",this.state.data_bak)
-    console.log("render=>data",this.state.data)
     return <Table 
               size="small"
               bordered
