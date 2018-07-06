@@ -150,16 +150,31 @@ export default class User extends React.Component {
       this.findMenu(null)
       //this.saveState({data:res.data.value})
     }else{
-      notification.open({
-        message: '更新失败',
-        description: "数据已被更新",
-      });
+      message.error('更新失败,数据已被更新')
     }
     }).catch(err=>{
       console.log(err);
     });
     //console.log(id);
     //console.log(data);
+  }
+
+  del(id){
+    api.put('/Flowt',{
+      data:{Id:id},
+      type:'post',
+      action:'/User/DelUser'
+    }).then(res=>{
+    console.log(res.data)
+    if(res.data.key=="success"){
+      message.info(res.data.value)
+      this.findMenu(null)
+    }else{
+      message.error(res.data.value)
+    }
+    }).catch(err=>{
+      console.log(err);
+    });
   }
 
   render () {
@@ -180,7 +195,8 @@ export default class User extends React.Component {
         updateState={this.setState.bind(this)} 
         saveState={this.saveState.bind(this)}
         add={this.handleAdd.bind(this)}
-        addState={this.addState.bind(this)}/>
+        addState={this.addState.bind(this)}
+        del={this.del.bind(this)}/>
       </PanelBox>
       </Row>
       </div>

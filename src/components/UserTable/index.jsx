@@ -136,6 +136,7 @@ class UserTable extends React.Component {
    */
   del(id){
     console.log('del=>'+id)
+    this.props.del(id)
   }
 
   /**
