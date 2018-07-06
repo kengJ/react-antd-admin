@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table ,Popconfirm ,Input,Row,Col ,Button,notification,Radio, Icon} from 'antd';
+import { Table ,Popconfirm ,Input,Row,Col ,Button,message,Radio, Icon} from 'antd';
 import PanelBox from '../../components/PanelBox';
 import UserTable from '../../components/UserTable';
 import api from '../../api'
@@ -89,10 +89,7 @@ export default class User extends React.Component {
       data: res.data
     });
     if(res.data.length==0){
-      notification.open({
-        message: '查询失败',
-        description: <p>根据关键字<b>{inputValue}</b>查询账号，并未查询到相关条目</p>,
-      });
+      message.error('查询失败:'+'根据关键字'+inputValue+'查询账号，并未查询到相关条目')
     }
     }).catch(err=>{
       console.log(err);
@@ -104,17 +101,38 @@ export default class User extends React.Component {
     const count = data.length+1;
     const newData = {
       id: '',
-      userName: `userName ${count}`,
+      userName: '',
       role: '',
-      updateDate: '20180622',
-      createDate: '20180622',
+      updateDate: '',
+      createDate: '',
+      password:''
     };
-    this.setState({
-      data: [...data, newData],
-     //count: count + 1,
+    return newData;
+  }
+
+  addState(target){
+    const username = target.userName
+    const password = target.password
+    console.log('addState=>username',username)
+    console.log('addState=>pasword',password)
+
+    api.put('/Flowt',{
+      data:{UserName:username,Password:password},
+      type:'post',
+      action:'/User/AddUser'
+    }).then(res=>{
+    console.log(res.data)
+    if(res.data.key=="success"){
+      message.info('已添加账号:'+res.data.value.userName)
+      this.findMenu(null)
+      //this.saveState({data:res.data.value})
+    }else{
+      message.error('增加失败:'+'账号已存在')
+      return false;
+    }
+    }).catch(err=>{
+      console.log(err);
     });
-    console.log(this.state.data);
-    
   }
 
   updateState(key,value){
@@ -160,7 +178,9 @@ export default class User extends React.Component {
         columns={this.state.columns} 
         data={this.state.data} 
         updateState={this.setState.bind(this)} 
-        saveState={this.saveState.bind(this)}/>
+        saveState={this.saveState.bind(this)}
+        add={this.handleAdd.bind(this)}
+        addState={this.addState.bind(this)}/>
       </PanelBox>
       </Row>
       </div>

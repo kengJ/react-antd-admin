@@ -1,4 +1,4 @@
-import { Table, Input, InputNumber, Popconfirm, Form } from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form ,Button} from 'antd';
 import React from 'react'
 import './index.less'
 
@@ -11,12 +11,11 @@ const EditableCell = ({ editable, value, onChange}) => (
   </div>
 );
 
-const data_bak = []
-
 class UserTable extends React.Component {
   state={
     data:[],
-    data_bak:[]
+    data_bak:[],
+    add_btn_disabled:false
   }
   constructor(props) {
     super(props);
@@ -35,7 +34,10 @@ class UserTable extends React.Component {
                     <a>取消</a>
                   </Popconfirm>
                 </span>
-                : <a onClick={() => this.edit(record.id)}>修改</a>
+                : <div>
+                  <a onClick={() => this.edit(record.id)}>修改</a>
+                  <a onClick={() => this.del(record.id)}>删除</a>
+                  </div>
             }
           </div>
         );
@@ -78,12 +80,17 @@ class UserTable extends React.Component {
       target[column] = value;
     }
     this.setState({data:newData})
-    console.log('handleChange=>bak',this.state.data_bak)
   }
 
-updateState(key,value){
-  this.setState({key,value})
-}
+  add(){
+    this.setState({add_btn_disabled:true})
+    let line = this.props.add()
+    const newData = this.state.data.map(item => ({ ...item }))
+    line.editable = true;
+    line.id = 'add'
+    newData.push(line);
+    this.setState({data:newData})
+  }
 
   /**
    * 编辑按钮触发
@@ -101,18 +108,34 @@ updateState(key,value){
   /**
    * 保存按钮触发
    * @param {*} id 
+   * 新增 id默认add
+   * 
    */
   save(id) {
-    console.log(this.state.data)
-    console.log(this.state.data_bak)
-    //const newData =  this.state.data.map(item => ({ ...item }))
-    const target = this.state.data.filter(item => id === item.id)[0];
-    const target_bak = this.state.data_bak.filter(item => id === item.id)[0];
-    if (target) {
-      Object.assign(target, this.state.data.filter(item => id === item.id)[0]);//替换this.state.data_bak数据
-      delete target.editable;
-      this.props.saveState(target_bak,target)
+    if(id=='add'){
+      const target = this.state.data.filter(item => id === item.id)[0];
+      this.props.addState(target)
+      if(check){
+        this.setState({add_btn_disabled:false})
+      }
+    }else{
+      const target = this.state.data.filter(item => id === item.id)[0];
+      const target_bak = this.state.data_bak.filter(item => id === item.id)[0];
+      if (target) {
+        Object.assign(target, this.state.data.filter(item => id === item.id)[0]);//替换this.state.data_bak数据
+        delete target.editable;
+        this.props.saveState(target_bak,target)
+      }
     }
+    
+  }
+
+  /**
+   * 删除按钮触发
+   * @param {*} id 
+   */
+  del(id){
+    console.log('del=>'+id)
   }
 
   /**
@@ -131,37 +154,35 @@ updateState(key,value){
 
   /**触发分页时函数 */
   handleTableChange(value){
-    console.log("handleTableChange")
     const newData = [...this.state.data];
-    //this.props.updateState(data,newData);
     this.setState({data:newData})
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    //监测this.props.data的变动
     //第一次查询
     if(this.props.data!=nextProps.data){
-      console.log("shouldComponentUpdate=>bak")
       nextState.data = nextProps.data.map(item => ({ ...item }))
       nextState.data_bak = nextProps.data.map(item => ({ ...item }))
+      nextState.add_btn_disabled= false;
     }
-    //nextState
     return true;
   }
 
-  componentWillReceivePorps(nextProps){
-    console.log('componentWillReceivePorps')
-  }
-
   render() {
-    return <Table 
-              size="small"
-              bordered
-              rowKey={record => record.id}
-              loading={false} 
-              dataSource={this.state.data} 
-              columns={this.columns} 
-              onChange={this.handleTableChange}/>;
+    return(
+      <div>
+        <Button style={{marginBottom:'10px'}} type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled}>增加</Button>
+        <Table 
+                size="small"
+                bordered
+                rowKey={record => record.id}
+                loading={false} 
+                dataSource={this.state.data} 
+                columns={this.columns} 
+                onChange={this.handleTableChange}></Table>
+      </div>
+    ) 
+    
   }
 }
 
