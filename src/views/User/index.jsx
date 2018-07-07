@@ -53,29 +53,31 @@ export default class User extends React.Component {
     console.log('del user id is '+id);   
   }
 
-  componentWillMount(){
-    
-  }
-
-  componentDidMount() {
-  }
-
   findMenu(key){
     if(key==null||key==""){
-      api.put('/Flowt',{
+      return api.put('/Flowt',{
         data:{},
         type:'get',
         action:'/User/UserList'
-      }).then(res=>{
-        console.log(res.data);
-        this.setState({
-          data: res.data
-        });
-      console.log("state",this.state);
+      })/**.then(res=>{
+        console.log(res.data)
+      return res.data;
       }).catch(err=>{
-        console.log('err',err);
+      });**/
+    }else{
+      api.put('/Flowt',{
+        data:{Code:inputValue},
+        type:'get',
+        action:'/User/UserListByCode'
+      }).then(res=>{
+        console.log(res.data)
+       return res.data;
+      if(res.data.length==0){
+        return {key:'err',value:'查询失败:'+'根据关键字'+inputValue+'查询账号，并未查询到相关条目'}
+      }
+      }).catch(err=>{
       });
-}
+    }
   }
 
   searchByCode(e){
@@ -181,12 +183,6 @@ export default class User extends React.Component {
     //this.findMenu(null)
     return (
       <div>
-      <Row gutter={20}>
-      <Col span={10}>
-        <Input ref="searchInput" placeholder="输入用户名" style={{'marginBottom': '20px'}} />
-      </Col>
-      <Col><Button type="primary" onClick={this.searchByCode.bind(this)}>查询</Button></Col>
-      </Row>
       <Row>
       <PanelBox title="用户列表">
       <UserTable 
@@ -196,7 +192,8 @@ export default class User extends React.Component {
         saveState={this.saveState.bind(this)}
         add={this.handleAdd.bind(this)}
         addState={this.addState.bind(this)}
-        del={this.del.bind(this)}/>
+        del={this.del.bind(this)}
+        Finde={this.findMenu.bind(this)}/>
       </PanelBox>
       </Row>
       </div>

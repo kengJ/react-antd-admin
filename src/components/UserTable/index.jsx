@@ -1,6 +1,8 @@
-import { Table, Input, InputNumber, Popconfirm, Form ,Button} from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form ,Button,message,Row,Col} from 'antd';
 import React from 'react'
 import './index.less'
+
+const Search = Input.Search;
 
 const EditableCell = ({ editable, value, onChange}) => (
   <div>
@@ -44,7 +46,6 @@ class UserTable extends React.Component {
       },
     }
     this.columns = [...this.props.columns,action]
-    console.log(this.columns)
     this.columns.map(item=>{
       if((item.title!="operation")&&(item.title!="operation"&&item.dataType!="read")){
         item.render=(text,record)=>this.renderColumns(text,record,item.dataIndex)
@@ -82,6 +83,7 @@ class UserTable extends React.Component {
     this.setState({data:newData})
   }
 
+  /**触发增加按钮 */
   add(){
     this.setState({add_btn_disabled:true})
     let line = this.props.add()
@@ -109,7 +111,6 @@ class UserTable extends React.Component {
    * 保存按钮触发
    * @param {*} id 
    * 新增 id默认add
-   * 
    */
   save(id) {
     if(id=='add'){
@@ -153,6 +154,24 @@ class UserTable extends React.Component {
     }
   }
 
+  searchByCode(e){
+    let inputValue = this.refs.searchInput.refs.input.value;
+    console.log(inputValue)
+    const result = this.props.Finde(inputValue)
+    result.then(res=>{
+      console.log(res.data)
+      if(res.data.length>=0){
+        message.info('查询成功')
+        this.setState({data:res.data})
+      }else{
+        message.error('没有查到该数据')
+      }
+    }).catch(err=>{
+      message.error('查询错误')
+    })
+    
+  }
+
   /**触发分页时函数 */
   handleTableChange(value){
     const newData = [...this.state.data];
@@ -172,7 +191,14 @@ class UserTable extends React.Component {
   render() {
     return(
       <div>
-        <Button style={{marginBottom:'10px'}} type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled}>增加</Button>
+        <Row gutter={20}>
+          <Col span={3}><Button style={{marginBottom:'10px'}} type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled}>增加</Button></Col>
+          <Col span={10}>
+            <Input ref="searchInput" placeholder="输入查询内容" style={{'marginBottom': '20px'}} />
+          </Col>
+          <Col><Button type="primary" onClick={this.searchByCode.bind(this)}>查询</Button></Col>
+        </Row>
+        
         <Table 
                 size="small"
                 bordered
