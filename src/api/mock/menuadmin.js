@@ -12,7 +12,7 @@ module.exports = {
         icon: 'user',
         child: [
           {
-            name: '用户管理设置',
+            name: '用户账号管理',
             key: 601,
             url: '/user'
           }

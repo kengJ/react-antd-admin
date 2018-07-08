@@ -1,0 +1,1 @@
+cnpm install js-export-excel
