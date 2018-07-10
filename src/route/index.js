@@ -15,6 +15,7 @@ import Cards from '@/views/Cards';
 import Mailbox from '@/views/Mailbox';
 import Page2 from '@/views/Page2';
 import User from '@/views/User';
+import Role from '@/views/Role';
 
 export const childRoutes = [
   {
@@ -56,6 +57,10 @@ export const childRoutes = [
   {
     'path':'/user',
     'component': User,
+  },
+  {
+    'path':'/role',
+    'component': Role,
   }
 ];
 

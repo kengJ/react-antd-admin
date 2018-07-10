@@ -35,10 +35,7 @@ mock.onGet('/logout').reply(200, {});
 mock.onGet('/my').reply(200, require('./mock/user'));
 //mock.onGet('/menu').reply(200, require('./mock/menu'));
 mock.onGet('/menu').reply(config=>{
-  //console.log('menu',config.role);
-  //let role = JSON.parse(config.role);
   let role = config.role;
-  //console.log('menu',config);
   if(role=="ADMIN"){
     return [200, require('./mock/menuadmin') ];
   }else{

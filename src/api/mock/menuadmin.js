@@ -15,9 +15,14 @@ module.exports = {
             name: '用户账号管理',
             key: 601,
             url: '/user'
+          },
+          {
+            name: '权限管理',
+            key: 602,
+            url: '/role'
           }
         ]
-      },{
+      } ,{
         key: 1,
         name: 'Pages',
         icon: 'user',

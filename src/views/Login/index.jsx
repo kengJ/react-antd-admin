@@ -37,12 +37,13 @@ class Login extends React.Component {
       });
       if (res.error) {
         message.error(res.payload.response.data.message);
-      }
-      if (!res.error && res.payload.data)  {
-        message.success('Welcome ' + res.payload.data.name);
-        this.props.history.replace('/');
       }else{
-        message.error('账号密码错误')
+        if (!res.error && res.payload.data)  {
+          message.success('Welcome ' + res.payload.data.name);
+          this.props.history.replace('/');
+        }else{
+          message.error('账号密码错误')
+        }
       }
     }).catch(err => {
       this.setState({

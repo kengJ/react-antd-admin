@@ -25,10 +25,11 @@ class UserTable extends React.Component {
     let action = {
       title: '操作',
       dataIndex: 'operation',
+      width:'150px',
       render: (text, record) => {
         const { editable } = record;
         return (
-          <div className="editable-row-operations">
+          <div className="editable-row-operations" style={{width:'150px'}}>
             {
               editable ?
                 <span>
@@ -115,6 +116,9 @@ class UserTable extends React.Component {
    * @param {*} id 
    */
   cancel(id) {
+    if(id=="add"){
+      this.setState({add_btn_disabled:false})
+    }
     const newData = this.state.data.map(item => ({ ...item }))
     const target = newData.filter(item => id === item.id)[0];
     if (target) {
