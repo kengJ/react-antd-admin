@@ -136,6 +136,7 @@ class UserTable extends React.Component {
     const api = this.props.Finde(value)
     api.then(res=>{
       if(res.data.length>=0){
+        this.setState({add_btn_disabled:false})
         if(isMessage)message.info('查询成功')
         this.setState({data:res.data,data_bak:res.data.map(item=>({...item}))})
       }else{
@@ -158,11 +159,11 @@ class UserTable extends React.Component {
       
       api.then(res=>{
         if(res.data.key=="success"){
-          message.info('已添加账号:'+res.data.value.userName)
+          message.info(res.data.value)
           this.setState({add_btn_disabled:false})
           this.Find("")
         }else{
-          message.error('增加失败:'+'账号已存在')
+          message.error(res.data.value)
         }
       }).catch(err=>{
         message.error('增加新数据错误')
