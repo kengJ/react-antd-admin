@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table ,Popconfirm ,Row,Col} from 'antd';
 import PanelBox from '../../components/PanelBox';
-import UserTable from '../../components/UserTable';
+import DataTable from '../../components/DataTable';
 import api from '../../api'
 import { bindActionCreators } from 'redux';
 
@@ -99,7 +99,7 @@ export default class User extends React.Component {
       <div>
         <Row>
           <PanelBox title="用户列表">
-            <UserTable 
+            <DataTable 
               columns={this.state.columns} 
               Save={this.saveState.bind(this)}
               Add_NewLine={this.handleAdd.bind(this)}

@@ -14,7 +14,7 @@ const EditableCell = ({ editable, value, onChange}) => (
   </div>
 );
 
-class UserTable extends React.Component {
+class DataTable extends React.Component {
   state={
     data:[],
     data_bak:[],
@@ -135,12 +135,18 @@ class UserTable extends React.Component {
   Find(value,isMessage=false){
     const api = this.props.Finde(value)
     api.then(res=>{
-      if(res.data.length>=0){
+      if(res.data.key=="success"){
+        
         this.setState({add_btn_disabled:false})
-        if(isMessage)message.info('查询成功')
-        this.setState({data:res.data,data_bak:res.data.map(item=>({...item}))})
+        
+        //if(isMessage)message.info('查询成功')
+        //console.log(res.data.value)
+        message.info(res.data.value)
+        //message.info('查询成功')
+        this.setState({data:res.data.list,data_bak:res.data.list.map(item=>({...item}))})
+        
       }else{
-        message.error('没有查到该数据')
+        message.error(res.data.value)
       }
     }).catch(err=>{
       message.error('查询错误')
@@ -264,7 +270,7 @@ class UserTable extends React.Component {
           <Col span={5}>
             <Button style={{marginBottom:'10px'}} type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled} style={{marginRight:'5px'}}>增加</Button>
             <Button style={{marginBottom:'10px'}} type="primary" onClick={this.Excel.bind(this)} style={{marginRight:'5px'}}>导出</Button>
-            <Button style={{marginBottom:'10px'}} type="primary" onClick={this.Input.bind(this)} style={{marginRight:'5px'}}>导入</Button>
+            <Button style={{marginBottom:'10px'}} type="primary" onClick={this.Input.bind(this)} style={{marginRight:'5px'}} disabled={true}>导入</Button>
           </Col>
           <Col span={10}>
             <Input ref="searchInput" placeholder="输入查询内容" style={{'marginBottom': '20px'}} />
@@ -286,4 +292,4 @@ class UserTable extends React.Component {
   }
 }
 
-export default UserTable;
+export default DataTable;

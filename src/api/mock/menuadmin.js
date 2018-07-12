@@ -22,6 +22,17 @@ module.exports = {
             url: '/role'
           }
         ]
+      },{
+        key: 7,
+        name: '导出管理',
+        icon: 'file-excel',
+        child: [
+          {
+            name: '报表管理',
+            key: 701,
+            url: '/excelTableSetting'
+          }
+        ]
       } ,{
         key: 1,
         name: 'Pages',

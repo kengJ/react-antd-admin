@@ -16,6 +16,7 @@ import Mailbox from '@/views/Mailbox';
 import Page2 from '@/views/Page2';
 import User from '@/views/User';
 import Role from '@/views/Role';
+import ExcelTableSetting from '@/views/ExcelTableSetting';
 
 export const childRoutes = [
   {
@@ -61,6 +62,9 @@ export const childRoutes = [
   {
     'path':'/role',
     'component': Role,
+  },{
+    'path':'/excelTableSetting',
+    'component': ExcelTableSetting,
   }
 ];
 
