@@ -1,12 +1,14 @@
 import React from 'react'
-import { Table ,Popconfirm ,Row,Col} from 'antd';
+import { Table ,Popconfirm ,Row,Col,Button,Form} from 'antd';
 import PanelBox from '../../components/PanelBox';
 import DataTable from '../../components/DataTable';
+import ExcelTableForm from '../../components/Form/ExcelTableForm';
 import api from '../../api'
 import { bindActionCreators } from 'redux';
 
 export default class ExcelTableSetting extends React.Component {
     state = {
+      visible:false,
         data: [],
         pagination: {},
         loading: false,
@@ -50,43 +52,30 @@ export default class ExcelTableSetting extends React.Component {
           sorter: true,
           key:'id',
           dataType:'read',
-          width: '10%',
+          width: '5%',
         }, {
           title: '报表名称',
           dataIndex: 'tableName',
           key:'tableName',
+          width:'10%'
         },{
           title: '查询语句',
-          dataIndex: 'sqlText',
-          key:'sqlText',
+          dataIndex: 'sql',
+          key:'sql',
+          width:'50%',
+          render:(sql)=>{
+            //const { sql } = record;
+            return (<div>`${sql.lenght}</div>);
+          }
         }, {
           title: '备注',
           dataIndex: 'memo',
           key:'memo',
         },{
-          title: '是否分表输出',
+          title: '分表',
           dataIndex: 'isSplitTable',
           key:'isSplitTable',
-        },{
-          title: '编码符号',
-          dataIndex: 'CodeIcon',
-          key:'CodeIcon',
-          dataType:'read'
-        },{
-          title: '部门符号',
-          dataIndex: 'deptIcon',
-          key:'deptIcon',
-          dataType:'read'
-        },{
-          title: '开始日期符号',
-          dataIndex: 'startDateIcon',
-          key:'startDateIcon',
-          dataType:'read'
-        },{
-          title: '结束日期符号',
-          dataIndex: 'finishDateIcon',
-          key:'finishDateIcon',
-          dataType:'read'
+          width:'5%'
         }]
     };
     constructor () {
@@ -98,8 +87,10 @@ export default class ExcelTableSetting extends React.Component {
     handleAdd(){
         const newData = {
           id: '',
-          roleName: '',
-          memo: ''
+          tableName: '',
+          sql: '',
+          memo:'',
+          isSplitTable:''
         };
         return newData;
     }
@@ -126,32 +117,47 @@ export default class ExcelTableSetting extends React.Component {
             action:'/SqlMessage/Find'
           })
     }
+
+    FindExcelTable(key){
+      return api.put('/Flowt',{
+        data:{Code:key},
+        type:'get',
+        action:'/ExcelTable/Find'
+      })
+    }
+
+    TipText(){
+      return ""
+    }
+
     render(){
         return(
             <div>
-        <Row>
-          <PanelBox title="数据库信息设置">
-            <DataTable 
-              columns={this.state.sqlMessageColumns} 
-              Save={this.saveState.bind(this)}
-              Add_NewLine={this.handleAdd.bind(this)}
-              Add={this.addState.bind(this)}
-              Del={this.del.bind(this)}
-              Finde={this.FindSqlMessage.bind(this)}/>
-          </PanelBox>
-        </Row>
-        <Row>
-          <PanelBox title="报表设置">
-            <DataTable 
-              columns={this.state.ExcelTableColumns} 
-              Save={this.saveState.bind(this)}
-              Add_NewLine={this.handleAdd.bind(this)}
-              Add={this.addState.bind(this)}
-              Del={this.del.bind(this)}
-              Finde={this.FindSqlMessage.bind(this)}/>
-          </PanelBox>
-        </Row>
-      </div>
+              <Row>
+                <PanelBox title="数据库信息设置">
+                  <DataTable 
+                    columns={this.state.sqlMessageColumns} 
+                    Save={this.saveState.bind(this)}
+                    Add_NewLine={this.handleAdd.bind(this)}
+                    Add={this.addState.bind(this)}
+                    Del={this.del.bind(this)}
+                    Finde={this.FindSqlMessage.bind(this)}
+                    form={ExcelTableForm}
+                    />
+                </PanelBox>
+              </Row>
+              <Row>
+                <PanelBox title="报表设置">
+                  <DataTable 
+                    columns={this.state.ExcelTableColumns} 
+                    Save={this.saveState.bind(this)}
+                    Add_NewLine={this.handleAdd.bind(this)}
+                    Add={this.addState.bind(this)}
+                    Del={this.del.bind(this)}
+                    Finde={this.FindExcelTable.bind(this)}/>
+                </PanelBox>
+              </Row>
+            </div>
         )
     }
 }

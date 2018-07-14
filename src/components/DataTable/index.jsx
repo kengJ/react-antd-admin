@@ -1,15 +1,16 @@
-import { Table, Input, InputNumber, Popconfirm, Form ,Button,message,Row,Col} from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form ,Button,message,Row,Col,Card,Modal} from 'antd';
 import React from 'react'
 import './index.less'
 //import {ExportJsonExcel } from 'js-export-excel';
 
 const Search = Input.Search;
+const { TextArea } = Input;
 
 const EditableCell = ({ editable, value, onChange}) => (
   <div>
     {editable
-      ? <Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />
-      : value
+      ? (value.length<30||value==""?<Input style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} />:<TextArea style={{ margin: '-5px 0' }} value={value} onChange={e => onChange(e.target.value)} rows={4} />)
+      : (value.length>30?value.substring(0,80)+'...':value)
     }
   </div>
 );
@@ -18,7 +19,9 @@ class DataTable extends React.Component {
   state={
     data:[],
     data_bak:[],
-    add_btn_disabled:false
+    add_btn_disabled:false,
+    modelBox: false,
+    editTarget:{}
   }
   constructor(props) {
     super(props);
@@ -85,17 +88,31 @@ class DataTable extends React.Component {
     this.setState({data:newData})
   }
 
+  /**
+   * 弹出模态框
+   */
+  showModal(){
+    this.setState({ modelBox: true });
+  }
+
   /**触发增加按钮 
    * 增加一行新数据，可编辑
   */
   add(){
-    this.setState({add_btn_disabled:true})
-    let line = this.props.Add_NewLine()
-    const newData = this.state.data.map(item => ({ ...item }))
-    line.editable = true;
-    line.id = 'add'
-    newData.push(line);
-    this.setState({data:newData})
+    //console.log(this.props.form)
+    if(this.props.form!=undefined){
+      //this.setState({add_btn_disabled:true})
+      this.showModal()
+    }else{
+      this.setState({add_btn_disabled:true})
+      let line = this.props.Add_NewLine()
+      const newData = this.state.data.map(item => ({ ...item }))
+      line.editable = true;
+      line.id = 'add'
+      newData.push(line);
+      this.setState({data:newData})
+    }
+    
   }
 
   /**
@@ -103,11 +120,16 @@ class DataTable extends React.Component {
    * @param {*} id 
    */
   edit(id) {
+    
     const newData = this.state.data.map(item => ({ ...item }))
     const target = newData.filter(item => id === item.id)[0];
+    if(this.props.form==undefined){
     if (target) {
       target.editable = true;
       this.setState({data:newData})
+    }
+    }else{
+      this.setState({ modelBox: true ,editTarget:newData});
     }
   }
 
@@ -133,24 +155,29 @@ class DataTable extends React.Component {
    * @param {*} value 
    */
   Find(value,isMessage=false){
-    const api = this.props.Finde(value)
-    api.then(res=>{
-      if(res.data.key=="success"){
-        
-        this.setState({add_btn_disabled:false})
-        
-        //if(isMessage)message.info('查询成功')
-        //console.log(res.data.value)
-        message.info(res.data.value)
-        //message.info('查询成功')
-        this.setState({data:res.data.list,data_bak:res.data.list.map(item=>({...item}))})
-        
-      }else{
-        message.error(res.data.value)
-      }
-    }).catch(err=>{
-      message.error('查询错误')
-    })
+    //console.log(this.props.Finde)
+    if(this.props.Finde!=undefined){
+      const api = this.props.Finde(value)
+      api.then(res=>{
+        if(res.data.key=="success"){
+          
+          this.setState({add_btn_disabled:false})
+          
+          //if(isMessage)message.info('查询成功')
+          //console.log(res.data.value)
+          message.info(res.data.value)
+          //message.info('查询成功')
+          this.setState({data:res.data.list,data_bak:res.data.list.map(item=>({...item}))})
+          
+        }else{
+          message.error(res.data.value)
+        }
+      }).catch(err=>{
+        message.error('查询错误')
+      })
+    }else{
+
+    }
   }
 
   /**
@@ -263,21 +290,70 @@ class DataTable extends React.Component {
 
   }
 
+  saveFormRef = (formRef) => {
+    console.log('saveFormRef'+new Date())
+    console.log(this.state.editTarget)
+    this.formRef = formRef;
+  }
+
+  handleCancel = () => {
+    this.setState({ modelBox: false });
+  }
+
+  handleCreate = () => {
+    const form = this.formRef.props.form;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      console.log('Received values of form: ', values);
+      form.resetFields();
+      this.setState({ modelBox: false });
+    });
+  }  
+
   render() {
+    let checkFind = this.props.Finde
+    let UserForm = this.props.form
     return(
       <div>
-        <Row gutter={20}>
+        {this.props.form!=undefined?
+        (<div><UserForm visible={this.state.modelBox} wrappedComponentRef={this.saveFormRef} onCancel={this.handleCancel} onCreate={this.handleCreate}></UserForm></div>):
+        (<div></div>)}
+       
+        <Row gutter={20} style={{'marginBottom': '20px'}}>
           <Col span={5}>
-            <Button style={{marginBottom:'10px'}} type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled} style={{marginRight:'5px'}}>增加</Button>
-            <Button style={{marginBottom:'10px'}} type="primary" onClick={this.Excel.bind(this)} style={{marginRight:'5px'}}>导出</Button>
-            <Button style={{marginBottom:'10px'}} type="primary" onClick={this.Input.bind(this)} style={{marginRight:'5px'}} disabled={true}>导入</Button>
+            <Button type="primary" onClick={this.add.bind(this)} disabled={this.state.add_btn_disabled||checkFind==undefined} style={{marginRight:'5px'}}>增加</Button>
+            <Button type="primary" onClick={this.Excel.bind(this)} style={{marginRight:'5px'}} disabled={checkFind==undefined}>导出</Button>
+            <Button type="primary" onClick={this.Input.bind(this)} style={{marginRight:'5px'}} disabled={true}>导入</Button>
           </Col>
-          <Col span={10}>
-            <Input ref="searchInput" placeholder="输入查询内容" style={{'marginBottom': '20px'}} />
-          </Col>
-          <Col><Button type="primary" onClick={this.searchByCode.bind(this)}>查询</Button></Col>
+          {
+            checkFind!=undefined?
+            (<div>
+              <Col span={10} style={{marginRight:'10px'}}>
+                <Input ref="searchInput" placeholder="输入查询内容" />
+              </Col>
+              <Col><Button type="primary" onClick={this.searchByCode.bind(this)}>查询</Button></Col>
+            </div>)
+            :
+            (<div></div>)
+          }
+          
         </Row>
         
+        {
+          this.props.Tip!=undefined?
+          (<Card
+            style={{ marginTop: 16 ,marginBottom:'10px'}}
+            type="inner"
+            title="提示"
+            //extra={<a href="#">More</a>}
+          >
+            Inner Card content
+          </Card>):(<div></div>)
+        }
+
         <Table 
                 size="small"
                 bordered
