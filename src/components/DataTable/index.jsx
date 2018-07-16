@@ -120,7 +120,6 @@ class DataTable extends React.Component {
    * @param {*} id 
    */
   edit(id) {
-    
     const newData = this.state.data.map(item => ({ ...item }))
     const target = newData.filter(item => id === item.id)[0];
     if(this.props.form==undefined){
@@ -291,8 +290,6 @@ class DataTable extends React.Component {
   }
 
   saveFormRef = (formRef) => {
-    console.log('saveFormRef'+new Date())
-    console.log(this.state.editTarget)
     this.formRef = formRef;
   }
 
@@ -319,7 +316,7 @@ class DataTable extends React.Component {
     return(
       <div>
         {this.props.form!=undefined?
-        (<div><UserForm visible={this.state.modelBox} wrappedComponentRef={this.saveFormRef} onCancel={this.handleCancel} onCreate={this.handleCreate}></UserForm></div>):
+        (<div><UserForm value={{title:'123'}} visible={this.state.modelBox} wrappedComponentRef={this.saveFormRef} onCancel={this.handleCancel} onCreate={this.handleCreate}></UserForm></div>):
         (<div></div>)}
        
         <Row gutter={20} style={{'marginBottom': '20px'}}>
